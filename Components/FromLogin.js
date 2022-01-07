@@ -1,28 +1,44 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
-import { auth } from '../firebase/firebaseconfig'
+import auth from '@react-native-firebase/auth';
 import "@react-native-firebase/app"
-
+import { NavigationContainer } from '@react-navigation/native';
 
 export default class FromLogin extends Component {
     state = {
         email: "",
-        password: ""
+        password: "",
+        errorMessage: null
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props
+        auth()
+            .onAuthStateChanged(user => {
+                this.props.navigation.navigate(user ? 'Product' : 'Đăng nhập')
+            })
     }
     onFooterLinkPress = () => {
         this.props.navigation.navigate('Signup')
     }
     onLoginPress = () => {
-        // auth
-        //     .signInWithEmailAndPassword(this.state.email, this.state.password)
-        //     .then(userCredentials => {
-        //         const user = userCredentials.user;
-        //         console.log("Login with  user", user.email);
-        //     })
-        //     .catch(error => alert(error.message))
-        // auth
-        //  this.props.navigation.navigate("Product")
+        const { email, password } = this.state
+        const { navigation } = this.props
+        auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(() => navigation.navigate('Product'))
+            .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in use!');
+                }
+
+                if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is ko có!');
+                }
+
+                console.error(error);
+            });
     }
 
     render() {
@@ -34,6 +50,7 @@ export default class FromLogin extends Component {
                         style={{ flex: 1, width: '100%' }}
                         keyboardShouldPersistTaps="always">
 
+                        <Image style={{ width: 100, height: 100, borderRadius: 60, alignSelf: "center" }} source={require("../public/logo-loctroi.png")} />
                         <TextInput
                             style={styles.input}
                             placeholder='E-mail'

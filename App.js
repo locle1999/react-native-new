@@ -34,32 +34,36 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FromSignup from './Components/FromSignup';
+import { Provider } from "react-redux"
+import { createStore } from 'redux';
+import listReducer from './store/reducer/listReducer';
 
 
 const Stack = createNativeStackNavigator();
 //const Drawer = createDrawerNavigator();
 //const Tab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
+
+
+const reduxStore = createStore(listReducer)
+
 const App = () => {
 
   return (
+
+    // <FromLogin />
     // <FromRegister />
-    // <Product />
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Đăng nhập">
-        <Stack.Screen name="Đăng ký" component={FromRegister} />
-        <Stack.Screen name="Đăng nhập" component={FromLogin} />
-        <Stack.Screen name="Product" component={Product} />
-        <Stack.Screen name="Signup" component={FromSignup} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={reduxStore}>
+      <Product />
+    </Provider>
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="Đăng nhập">
+    //     <Stack.Screen name="Đăng ký" component={FromRegister} />
+    //     <Stack.Screen name="Đăng nhập" component={FromLogin} />
+    //     <Stack.Screen name="Product" component={Product} />
+    //     <Stack.Screen name="Signup" component={FromSignup} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
     // <NavigationContainer>
     //   {/* <Drawer.Navigator>
     //     <Drawer.Screen name="Đăng ký" component={FromRegister} />
